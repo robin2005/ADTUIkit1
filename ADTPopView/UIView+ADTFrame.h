@@ -1,5 +1,5 @@
 //
-//  UIView+ADTPV.h
+//  UIView+ADTFrame.h
 //  ADTUIKit
 //
 //  Copyright (c) 2020 robin2005 - https://github.com/robin005
@@ -26,7 +26,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIView (ADTPV)
+@interface UIView (ADTFrame)
 
 /** 获取/设置view的x坐标 */
 @property (nonatomic, assign) CGFloat pv_X;

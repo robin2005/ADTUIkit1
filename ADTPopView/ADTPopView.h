@@ -25,7 +25,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ADTPopViewProtocol.h"
-#import "UIView+ADTPV.h"
+#import "UIView+ADTFrame.h"
 
 
 #define ADTPopViewWK(object)  __weak typeof(object) wk_##object = object;
