@@ -45,15 +45,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) UIView *parentView;
 /** 自定义view */
 @property (nonatomic, readonly) UIView *currCustomView;
-/** 弹窗位置 默认ADTHemStyleCenter */
-@property (nonatomic, assign) ADTHemStyle hemStyle;
-/** 显示时动画弹窗样式 默认ADTPopStyleNO */
-@property (nonatomic, assign) ADTPopStyle popStyle;
-/** 移除时动画弹窗样式 默认ADTDismissStyleNO */
-@property (nonatomic, assign) ADTDismissStyle dismissStyle;
-/** 显示时动画时长，> 0。不设置则使用默认的动画时长 设置成ADTPopStyleNO, 该属性无效 */
+/** 弹窗位置 默认Center */
+@property (nonatomic, assign) ADTPostionStyle hemStyle;
+/** 显示时动画弹窗样式 默认ADTPopAnimationStyleNO */
+@property (nonatomic, assign) ADTPopAnimationStyle popStyle;
+/** 移除时动画弹窗样式 默认ADTPopDismissStyleNO */
+@property (nonatomic, assign) ADTPopDismissStyle dismissStyle;
+/** 显示时动画时长，> 0。不设置则使用默认的动画时长 设置成ADTPopAnimationStyleNO, 该属性无效 */
 @property (nonatomic, assign) NSTimeInterval popDuration;
-/** 隐藏时动画时长，>0。不设置则使用默认的动画时长  设置成ADTDismissStyleNO, 该属性无效 */
+/** 隐藏时动画时长，>0。不设置则使用默认的动画时长  设置成ADTPopDismissStyleNO, 该属性无效 */
 @property (nonatomic, assign) NSTimeInterval dismissDuration;
 /** 弹窗水平方向(X)偏移量校准 默认0 */
 @property (nonatomic, assign) CGFloat adjustX;
@@ -101,23 +101,18 @@ NS_ASSUME_NONNULL_BEGIN
 /** X轴或者Y轴拖拽移除临界距离 范围(0 ~ +∞)  默认0 不拖拽移除  基使用于dragStyle  */
 @property (nonatomic, assign) CGFloat dragDistance;
 /** 拖拽移除动画类型 默认同dismissStyle  */
-@property (nonatomic, assign) ADTDismissStyle dragDismissStyle;
+@property (nonatomic, assign) ADTPopDismissStyle dragDismissStyle;
 /** 拖拽消失动画时间 默认同 dismissDuration  */
 @property (nonatomic, assign) NSTimeInterval dragDismissDuration;
 /** 拖拽复原动画时间 默认0.25s */
 @property (nonatomic, assign) NSTimeInterval dragReboundTime;
 
 /** 轻扫方向 默认 不可轻扫  前提开启dragStyle */
-@property (nonatomic, assign) ADTSweepStyle sweepStyle;
+@property (nonatomic, assign) ADTPopSweepStyle sweepStyle;
 /** 轻扫速率 控制轻扫移除 默认1000  基于使用sweepStyle */
 @property (nonatomic, assign) CGFloat swipeVelocity;
 /** 轻扫移除的动画 默认ADTSweepDismissStyleVelocity  */
-@property (nonatomic, assign) ADTSweepDismissStyle sweepDismissStyle;
-
-//@property (nonatomic, strong) NSArray *xDragDistances;//待计划
-//@property (nonatomic, strong) NSArray *yDragDistances;//待计划
-
-//****************************************
+@property (nonatomic, assign) ADTSweepDismissStyle sweepDismissStyle; 
 
 /** 点击背景 */
 @property (nullable, nonatomic, copy) void(^bgClickBlock)(void);
@@ -166,22 +161,22 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable instancetype)initWithCustomView:(UIView *_Nonnull)customView;
 
 + (nullable instancetype)initWithCustomView:(UIView *)customView
-                                   popStyle:(ADTPopStyle)popStyle
-                               dismissStyle:(ADTDismissStyle)dismissStyle;
+                                   popStyle:(ADTPopAnimationStyle)popStyle
+                               dismissStyle:(ADTPopDismissStyle)dismissStyle;
 
 + (nullable instancetype)initWithCustomView:(UIView *)customView
                                  parentView:(UIView *_Nullable)parentView
-                                   popStyle:(ADTPopStyle)popStyle
-                               dismissStyle:(ADTDismissStyle)dismissStyle;
+                                   popStyle:(ADTPopAnimationStyle)popStyle
+                               dismissStyle:(ADTPopDismissStyle)dismissStyle;
 /*
   以下是弹出方法
   popStyle: 弹出动画 优先级大于全局的popStyle 局部起作用
   duration: 弹出时间 优先级大于全局的popDuration 局部起作用
 */
 - (void)pop;
-- (void)popWithStyle:(ADTPopStyle)popStyle;
+- (void)popWithStyle:(ADTPopAnimationStyle)popStyle;
 - (void)popWithDuration:(NSTimeInterval)duration;
-- (void)popWithStyle:(ADTPopStyle)popStyle duration:(NSTimeInterval)duration;
+- (void)popWithStyle:(ADTPopAnimationStyle)popStyle duration:(NSTimeInterval)duration;
 
 
 /*
@@ -190,9 +185,9 @@ NS_ASSUME_NONNULL_BEGIN
   duration: 弹出时间 优先级大于全局的dismissDuration 局部起作用
 */
 - (void)dismiss;
-- (void)dismissWithStyle:(ADTDismissStyle)dismissStyle;
+- (void)dismissWithStyle:(ADTPopDismissStyle)dismissStyle;
 - (void)dismissWithDuration:(NSTimeInterval)duration;
-- (void)dismissWithStyle:(ADTDismissStyle)dismissStyle duration:(NSTimeInterval)duration;
+- (void)dismissWithStyle:(ADTPopDismissStyle)dismissStyle duration:(NSTimeInterval)duration;
 
 
 /** 删除指定代理 */

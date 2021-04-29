@@ -23,14 +23,7 @@
 //
 
 #import <Foundation/Foundation.h>
-@class ADTPopView;
-
-
-#ifdef DEBUG
-#define ADTPVLog(format, ...) printf("class: <%p %s:(row %d) > method: %s \n%s\n", self, [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, __PRETTY_FUNCTION__, [[NSString stringWithFormat:(format), ##__VA_ARGS__] UTF8String] )
-#else
-#define ADTPVLog(format, ...)
-#endif
+@class ADTPopView; 
 
 /** 调试日志类型 */
 typedef NS_ENUM(NSInteger, ADTPopViewLogStyle) {
@@ -41,33 +34,33 @@ typedef NS_ENUM(NSInteger, ADTPopViewLogStyle) {
 };
 
 /** 显示动画样式 */
-typedef NS_ENUM(NSInteger, ADTPopStyle) {
-    ADTPopStyleFade = 0,               // 默认 渐变出现
-    ADTPopStyleNO,                     // 无动画
-    ADTPopStyleScale,                  // 缩放 先放大 后恢复至原大小
-    ADTPopStyleSmoothFromTop,          // 顶部 平滑淡入动画
-    ADTPopStyleSmoothFromLeft,         // 左侧 平滑淡入动画
-    ADTPopStyleSmoothFromBottom,       // 底部 平滑淡入动画
-    ADTPopStyleSmoothFromRight,        // 右侧 平滑淡入动画
-    ADTPopStyleSpringFromTop,          // 顶部 平滑淡入动画 带弹簧
-    ADTPopStyleSpringFromLeft,         // 左侧 平滑淡入动画 带弹簧
-    ADTPopStyleSpringFromBottom,       // 底部 平滑淡入动画 带弹簧
-    ADTPopStyleSpringFromRight,        // 右侧 平滑淡入动画 带弹簧
-    ADTPopStyleCardDropFromLeft,       // 顶部左侧 掉落动画
-    ADTPopStyleCardDropFromRight,      // 顶部右侧 掉落动画
+typedef NS_ENUM(NSInteger, ADTPopAnimationStyle) {
+    ADTPopAnimationStyleFade = 0,               // 默认 渐变出现
+    ADTPopAnimationStyleNO,                     // 无动画
+    ADTPopAnimationStyleScale,                  // 缩放 先放大 后恢复至原大小
+    ADTPopAnimationStyleSmoothFromTop,          // 顶部 平滑淡入动画
+    ADTPopAnimationStyleSmoothFromLeft,         // 左侧 平滑淡入动画
+    ADTPopAnimationStyleSmoothFromBottom,       // 底部 平滑淡入动画
+    ADTPopAnimationStyleSmoothFromRight,        // 右侧 平滑淡入动画
+    ADTPopAnimationStyleSpringFromTop,          // 顶部 平滑淡入动画 带弹簧
+    ADTPopAnimationStyleSpringFromLeft,         // 左侧 平滑淡入动画 带弹簧
+    ADTPopAnimationStyleSpringFromBottom,       // 底部 平滑淡入动画 带弹簧
+    ADTPopAnimationStyleSpringFromRight,        // 右侧 平滑淡入动画 带弹簧
+    ADTPopAnimationStyleCardDropFromLeft,       // 顶部左侧 掉落动画
+    ADTPopAnimationStyleCardDropFromRight,      // 顶部右侧 掉落动画
 };
 /** 消失动画样式 */
-typedef NS_ENUM(NSInteger, ADTDismissStyle) {
-    ADTDismissStyleFade = 0,             // 默认 渐变消失
-    ADTDismissStyleNO,                   // 无动画
-    ADTDismissStyleScale,                // 缩放
-    ADTDismissStyleSmoothToTop,          // 顶部 平滑淡出动画
-    ADTDismissStyleSmoothToLeft,         // 左侧 平滑淡出动画
-    ADTDismissStyleSmoothToBottom,       // 底部 平滑淡出动画
-    ADTDismissStyleSmoothToRight,        // 右侧 平滑淡出动画
-    ADTDismissStyleCardDropToLeft,       // 卡片从中间往左侧掉落
-    ADTDismissStyleCardDropToRight,      // 卡片从中间往右侧掉落
-    ADTDismissStyleCardDropToTop,        // 卡片从中间往顶部移动消失
+typedef NS_ENUM(NSInteger, ADTPopDismissStyle) {
+    ADTPopDismissStyleFade = 0,             // 默认 渐变消失
+    ADTPopDismissStyleNO,                   // 无动画
+    ADTPopDismissStyleScale,                // 缩放
+    ADTPopDismissStyleSmoothToTop,          // 顶部 平滑淡出动画
+    ADTPopDismissStyleSmoothToLeft,         // 左侧 平滑淡出动画
+    ADTPopDismissStyleSmoothToBottom,       // 底部 平滑淡出动画
+    ADTPopDismissStyleSmoothToRight,        // 右侧 平滑淡出动画
+    ADTPopDismissStyleCardDropToLeft,       // 卡片从中间往左侧掉落
+    ADTPopDismissStyleCardDropToRight,      // 卡片从中间往右侧掉落
+    ADTPopDismissStyleCardDropToTop,        // 卡片从中间往顶部移动消失
 };
 /** 主动动画样式(开发中) */
 typedef NS_ENUM(NSInteger, ADTActivityStyle) {
@@ -76,16 +69,16 @@ typedef NS_ENUM(NSInteger, ADTActivityStyle) {
     ADTActivityStyleShake,                /// 抖动
 };
 /** 弹窗位置 */
-typedef NS_ENUM(NSInteger, ADTHemStyle) {
-    ADTHemStyleCenter = 0,   //居中
-    ADTHemStyleTop,          //贴顶
-    ADTHemStyleLeft,         //贴左
-    ADTHemStyleBottom,       //贴底
-    ADTHemStyleRight,        //贴右
-    ADTHemStyleTopLeft,      //贴顶和左
-    ADTHemStyleBottomLeft,   //贴底和左
-    ADTHemStyleBottomRight,  //贴底和右
-    ADTHemStyleTopRight      //贴顶和右
+typedef NS_ENUM(NSInteger, ADTPostionStyle) {
+    ADTPostionStyleCenter = 0,   //居中
+    ADTPostionStyleTop,          //贴顶
+    ADTPostionStyleLeft,         //贴左
+    ADTPostionStyleBottom,       //贴底
+    ADTPostionStyleRight,        //贴右
+    ADTPostionStyleTopLeft,      //贴顶和左
+    ADTPostionStyleBottomLeft,   //贴底和左
+    ADTPostionStyleBottomRight,  //贴底和右
+    ADTPostionStyleTopRight      //贴顶和右
 };
 /** 拖拽方向 */
 typedef NS_ENUM(NSInteger, ADTDragStyle) {
@@ -99,24 +92,24 @@ typedef NS_ENUM(NSInteger, ADTDragStyle) {
     ADTDragStyleAll = (ADTDragStyleX|ADTDragStyleY)   //全向拖拽
 };
 ///** 可轻扫消失的方向 */
-typedef NS_ENUM(NSInteger, ADTSweepStyle) {
-    ADTSweepStyleNO = 0,  //默认 不能拖拽窗口
-    ADTSweepStyleX_Positive = 1<<0,   //X轴正方向拖拽
-    ADTSweepStyleX_Negative = 1<<1,   //X轴负方向拖拽
-    ADTSweepStyleY_Positive = 1<<2,   //Y轴正方向拖拽
-    ADTSweepStyleY_Negative = 1<<3,   //Y轴负方向拖拽
-    ADTSweepStyleX = (ADTSweepStyleX_Positive|ADTSweepStyleX_Negative),   //X轴方向拖拽
-    ADTSweepStyleY = (ADTSweepStyleY_Positive|ADTSweepStyleY_Negative),   //Y轴方向拖拽
-    ADTSweepStyleALL = (ADTSweepStyleX|ADTSweepStyleY)   //全向轻扫
+typedef NS_ENUM(NSInteger, ADTPopSweepStyle) {
+    ADTPopSweepStyleNO = 0,  //默认 不能拖拽窗口
+    ADTPopSweepStyleX_Positive = 1<<0,   //X轴正方向拖拽
+    ADTPopSweepStyleX_Negative = 1<<1,   //X轴负方向拖拽
+    ADTPopSweepStyleY_Positive = 1<<2,   //Y轴正方向拖拽
+    ADTPopSweepStyleY_Negative = 1<<3,   //Y轴负方向拖拽
+    ADTPopSweepStyleX = (ADTPopSweepStyleX_Positive|ADTPopSweepStyleX_Negative),   //X轴方向拖拽
+    ADTPopSweepStyleY = (ADTPopSweepStyleY_Positive|ADTPopSweepStyleY_Negative),   //Y轴方向拖拽
+    ADTPopSweepStyleALL = (ADTPopSweepStyleX|ADTPopSweepStyleY)   //全向轻扫
 };
 
 /**
    可轻扫消失动画类型 对单向横扫 设置有效
    ADTSweepDismissStyleSmooth: 自动适应选择以下其一
-   ADTDismissStyleSmoothToTop,
-   ADTDismissStyleSmoothToLeft,
-   ADTDismissStyleSmoothToBottom ,
-   ADTDismissStyleSmoothToRight
+   ADTPopDismissStyleSmoothToTop,
+   ADTPopDismissStyleSmoothToLeft,
+   ADTPopDismissStyleSmoothToBottom ,
+   ADTPopDismissStyleSmoothToRight
  */
 typedef NS_ENUM(NSInteger, ADTSweepDismissStyle) {
     ADTSweepDismissStyleVelocity = 0,  //默认加速度 移除

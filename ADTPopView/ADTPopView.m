@@ -147,7 +147,7 @@ ADTPopViewManager *ADTPopViewM() {
         
         if ([tPopView isEqual:popView]) {
 //            [ADTPopViewM().popViewMarr removeObject:obj];
-            [tPopView dismissWithStyle:ADTDismissStyleNO];
+            [tPopView dismissWithStyle:ADTPopDismissStyleNO];
             break;
         }
     }
@@ -169,7 +169,7 @@ ADTPopViewManager *ADTPopViewM() {
         
         if ([tPopView.identifier isEqualToString:key]) {
 //            [ADTPopViewM().popViewMarr removeObject:obj];
-            [tPopView dismissWithStyle:ADTDismissStyleNO];
+            [tPopView dismissWithStyle:ADTPopDismissStyleNO];
             break;
         }
     }
@@ -190,7 +190,7 @@ ADTPopViewManager *ADTPopViewM() {
     [popViewMarr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         ADTPopView *tPopView = (ADTPopView *)obj;
         
-        [tPopView dismissWithStyle:ADTDismissStyleNO];
+        [tPopView dismissWithStyle:ADTPopDismissStyleNO];
     }];
     
     if (_logStyle &  ADTPopViewLogStyleWindow) {
@@ -221,7 +221,7 @@ ADTPopViewManager *ADTPopViewM() {
 }
 
 + (void)setConsoleLog {
-    ADTPVLog(@"%@ S:%zd个 R:%zd个",ADTPopViewLogTitle,ADTPopViewM().popViewMarr.count,ADTPopViewM().removeList.allObjects.count);
+    NSLog(@"%@ S:%zd个 R:%zd个",ADTPopViewLogTitle,ADTPopViewM().popViewMarr.count,ADTPopViewM().removeList.allObjects.count);
 }
 
 //冒泡排序
@@ -376,11 +376,11 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     _isClickBgDismiss = NO;
     _isObserverScreenRotation = YES;
     _bgAlpha = 0.25;
-    _popStyle = ADTPopStyleFade;
-    _dismissStyle = ADTDismissStyleFade;
+    _popStyle = ADTPopAnimationStyleFade;
+    _dismissStyle = ADTPopDismissStyleFade;
     _popDuration = ADTPopViewDefaultDuration;
     _dismissDuration = ADTPopViewDefaultDuration;
-    _hemStyle = ADTHemStyleCenter;
+    _hemStyle = ADTPostionStyleCenter;
     _adjustX = 0;
     _adjustY = 0;
     _isClickFeedback = NO;
@@ -400,7 +400,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     
     //拖拽相关属性初始化
     _dragStyle = ADTDragStyleNO;
-    _dragDismissStyle = ADTDismissStyleNO;
+    _dragDismissStyle = ADTPopDismissStyleNO;
     _dragDistance = 0.0f;
     _dragReboundTime = 0.25;
     _dragDismissDuration = ADTPopViewDefaultDuration;
@@ -410,13 +410,13 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 }
 
 + (nullable instancetype)initWithCustomView:(UIView *_Nonnull)customView {
-    return [self initWithCustomView:customView popStyle:ADTPopStyleNO dismissStyle:ADTDismissStyleNO];
+    return [self initWithCustomView:customView popStyle:ADTPopAnimationStyleNO dismissStyle:ADTPopDismissStyleNO];
 }
 
 
 + (nullable instancetype)initWithCustomView:(UIView *_Nonnull)customView
-                                   popStyle:(ADTPopStyle)popStyle
-                               dismissStyle:(ADTDismissStyle)dismissStyle {
+                                   popStyle:(ADTPopAnimationStyle)popStyle
+                               dismissStyle:(ADTPopDismissStyle)dismissStyle {
     
     return [self initWithCustomView:customView
                          parentView:nil
@@ -426,12 +426,12 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 
 + (nullable instancetype)initWithCustomView:(UIView *_Nonnull)customView
                                  parentView:(UIView *)parentView
-                                   popStyle:(ADTPopStyle)popStyle
-                               dismissStyle:(ADTDismissStyle)dismissStyle {
+                                   popStyle:(ADTPopAnimationStyle)popStyle
+                               dismissStyle:(ADTPopDismissStyle)dismissStyle {
     // 检测自定义视图是否存在(check customView is exist)
     if (!customView) { return nil; }
     if (![parentView isKindOfClass:[UIView class]] && parentView != nil) {
-        ADTPVLog(@"parentView is error !!!");
+        NSLog(@"parentView is error !!!");
         return nil;
     }
     
@@ -614,21 +614,21 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     
     CGFloat changeY = 0;
     switch (self.hemStyle) {
-        case ADTHemStyleTop ://贴顶
+        case ADTPostionStyleTop ://贴顶
         {
             self.customView.pv_X = _backgroundView.pv_CenterX - _customView.pv_Size.width*0.5 + _adjustX;
             self.customView.pv_Y = _adjustY;
             changeY = _adjustY;
         }
             break;
-        case ADTHemStyleLeft ://贴左
+        case ADTPostionStyleLeft ://贴左
         {
             self.customView.pv_X = _adjustX;
             self.customView.pv_Y = _backgroundView.pv_CenterY - _customView.pv_Size.height*0.5 + _adjustY;
             changeY = height*0.5;
         }
             break;
-        case ADTHemStyleBottom ://贴底
+        case ADTPostionStyleBottom ://贴底
         {
             self.customView.pv_X = _backgroundView.pv_CenterX - _customView.pv_Size.width*0.5 + _adjustX;
             [self.customView layoutIfNeeded];
@@ -636,21 +636,21 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             changeY = height;
         }
             break;
-        case ADTHemStyleRight ://贴右
+        case ADTPostionStyleRight ://贴右
         {
             self.customView.pv_X = _backgroundView.pv_Width - _customView.pv_Width + _adjustX;
             self.customView.pv_Y = _backgroundView.pv_CenterY - _customView.pv_Size.height*0.5 + _adjustY;
             changeY = height*0.5;
         }
             break;
-        case ADTHemStyleTopLeft :///贴顶和左
+        case ADTPostionStyleTopLeft :///贴顶和左
         {
             self.customView.pv_X = _adjustX;
             self.customView.pv_Y = _adjustY;
             changeY = _adjustY;
         }
             break;
-        case ADTHemStyleBottomLeft ://贴底和左
+        case ADTPostionStyleBottomLeft ://贴底和左
         {
             self.customView.pv_X = _adjustX;
             [self.customView layoutIfNeeded];
@@ -658,7 +658,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             changeY = height;
         }
             break;
-        case ADTHemStyleBottomRight ://贴底和右
+        case ADTPostionStyleBottomRight ://贴底和右
         {
             self.customView.pv_X = _backgroundView.pv_Width - _customView.pv_Width + _adjustX;
             [self.customView layoutIfNeeded];
@@ -666,7 +666,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             changeY = height;
         }
             break;
-        case ADTHemStyleTopRight ://贴顶和右
+        case ADTPostionStyleTopRight ://贴顶和右
         {
             self.customView.pv_X = _backgroundView.pv_Width - _customView.pv_Width + _adjustX;
             self.customView.pv_Y = _adjustY;
@@ -745,7 +745,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     _dragDismissDuration = dragDismissDuration;
 }
 
-- (void)setHemStyle:(ADTHemStyle)hemStyle {
+- (void)setHemStyle:(ADTPostionStyle)hemStyle {
     _hemStyle = hemStyle;
 }
 
@@ -790,7 +790,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     [self.delegates addObject:delegate];
 }
 
-- (void)setDragDismissStyle:(ADTDismissStyle)dragDismissStyle {
+- (void)setDragDismissStyle:(ADTPopDismissStyle)dragDismissStyle {
     _dragDismissStyle = dragDismissStyle;
     self.isDragDismissStyle = YES;
 }
@@ -800,7 +800,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     [self popWithStyle:self.popStyle duration:self.popDuration];
 }
 
-- (void)popWithStyle:(ADTPopStyle)popStyle {
+- (void)popWithStyle:(ADTPopAnimationStyle)popStyle {
     [self popWithStyle:popStyle duration:self.popDuration];
 }
 
@@ -808,11 +808,11 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     [self popWithStyle:self.popStyle duration:duration];
 }
 
-- (void)popWithStyle:(ADTPopStyle)popStyle duration:(NSTimeInterval)duration {
+- (void)popWithStyle:(ADTPopAnimationStyle)popStyle duration:(NSTimeInterval)duration {
     [self popWithPopStyle:popStyle duration:duration isOutStack:NO];
 }
 
-- (void)popWithPopStyle:(ADTPopStyle)popStyle duration:(NSTimeInterval)duration isOutStack:(BOOL)isOutStack {
+- (void)popWithPopStyle:(ADTPopAnimationStyle)popStyle duration:(NSTimeInterval)duration isOutStack:(BOOL)isOutStack {
     
     NSTimeInterval resDuration = [self getPopDuration:duration];
     
@@ -827,7 +827,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
         for (id obj  in popViewArr) {//移除所有popView和移除定a时器
             ADTPopView *lastPopView = (ADTPopView *)obj;
             
-            [lastPopView dismissWithDismissStyle:ADTDismissStyleNO duration:0.2 isRemove:YES];
+            [lastPopView dismissWithDismissStyle:ADTPopDismissStyleNO duration:0.2 isRemove:YES];
         }
         startTimer = YES;
     }else {//多显
@@ -844,7 +844,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
                         if (lastPopView.isShowKeyboard) {
                             [lastPopView endEditing:YES];
                         }
-                        [lastPopView dismissWithDismissStyle:ADTDismissStyleFade duration:0.2 isRemove:NO];
+                        [lastPopView dismissWithDismissStyle:ADTPopDismissStyleFade duration:0.2 isRemove:NO];
                         startTimer = YES;
                     } else {//隐藏显示
                         if (!self.parentView) {
@@ -892,17 +892,17 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     if (!isOutStack) { [ADTPopViewManager savePopView:self]; }
 }
 
-- (void)popAnimationWithPopStyle:(ADTPopStyle)popStyle duration:(NSTimeInterval)duration {
+- (void)popAnimationWithPopStyle:(ADTPopAnimationStyle)popStyle duration:(NSTimeInterval)duration {
     
     ADTPopViewWK(self);
-    if (popStyle == ADTPopStyleFade) {//渐变出现
+    if (popStyle == ADTPopAnimationStyleFade) {//渐变出现
         self.backgroundView.backgroundColor = [self getNewColorWith:self.bgColor alpha:0.0];
         self.customView.alpha = 0.0f;
         [UIView animateWithDuration:0.2 animations:^{
             self.backgroundView.backgroundColor =[self getNewColorWith:self.bgColor alpha:self.bgAlpha];
             self.customView.alpha = 1.0f;
         }];
-    } else if (popStyle == ADTPopStyleNO){//无动画
+    } else if (popStyle == ADTPopAnimationStyleNO){//无动画
         self.backgroundView.backgroundColor = [self getNewColorWith:self.bgColor alpha:0.0];
         [UIView animateWithDuration:0.1 animations:^{
             self.backgroundView.backgroundColor =[self getNewColorWith:self.bgColor alpha:self.bgAlpha];
@@ -919,7 +919,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 }
 
 - (void)hanlePopAnimationWithDuration:(NSTimeInterval)duration
-                             popStyle:(ADTPopStyle)popStyle {
+                             popStyle:(ADTPopAnimationStyle)popStyle {
     
     self.alpha = 0;
     [UIView animateWithDuration:duration*0.2 animations:^{
@@ -928,28 +928,28 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     
     ADTPopViewWK(self);
     switch (popStyle) {
-        case ADTPopStyleScale:// < 缩放动画，先放大，后恢复至原大小
+        case ADTPopAnimationStyleScale:// < 缩放动画，先放大，后恢复至原大小
         {
             [self animationWithLayer:_customView.layer duration:((0.3*duration)/0.7) values:@[@0.0, @1.2, @1.0]]; // 另外一组动画值(the other animation values) @[@0.0, @1.2, @0.9, @1.0]
         }
             break;
-        case ADTPopStyleSmoothFromTop:
-        case ADTPopStyleSmoothFromBottom:
-        case ADTPopStyleSmoothFromLeft:
-        case ADTPopStyleSmoothFromRight:
-        case ADTPopStyleSpringFromTop:
-        case ADTPopStyleSpringFromLeft:
-        case ADTPopStyleSpringFromBottom:
-        case ADTPopStyleSpringFromRight:
+        case ADTPopAnimationStyleSmoothFromTop:
+        case ADTPopAnimationStyleSmoothFromBottom:
+        case ADTPopAnimationStyleSmoothFromLeft:
+        case ADTPopAnimationStyleSmoothFromRight:
+        case ADTPopAnimationStyleSpringFromTop:
+        case ADTPopAnimationStyleSpringFromLeft:
+        case ADTPopAnimationStyleSpringFromBottom:
+        case ADTPopAnimationStyleSpringFromRight:
         {
             CGPoint startPosition = self.customView.layer.position;
-            if (popStyle == ADTPopStyleSmoothFromTop || popStyle == ADTPopStyleSpringFromTop) {
+            if (popStyle == ADTPopAnimationStyleSmoothFromTop || popStyle == ADTPopAnimationStyleSpringFromTop) {
                 self.customView.layer.position = CGPointMake(startPosition.x, -_customView.pv_Height*0.5);
                 
-            } else if (popStyle == ADTPopStyleSmoothFromLeft || popStyle == ADTPopStyleSpringFromLeft) {
+            } else if (popStyle == ADTPopAnimationStyleSmoothFromLeft || popStyle == ADTPopAnimationStyleSpringFromLeft) {
                 self.customView.layer.position = CGPointMake(-_customView.pv_Width*0.5, startPosition.y);
                 
-            } else if (popStyle == ADTPopStyleSmoothFromBottom || popStyle == ADTPopStyleSpringFromBottom) {
+            } else if (popStyle == ADTPopAnimationStyleSmoothFromBottom || popStyle == ADTPopAnimationStyleSpringFromBottom) {
                 self.customView.layer.position = CGPointMake(startPosition.x, CGRectGetMaxY(self.frame) + _customView.pv_Height*0.5);
                 
             } else {
@@ -957,10 +957,10 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             }
             
             CGFloat damping = 1.0;
-            if (popStyle == ADTPopStyleSpringFromTop||
-                popStyle == ADTPopStyleSpringFromLeft||
-                popStyle == ADTPopStyleSpringFromBottom||
-                popStyle == ADTPopStyleSpringFromRight) {
+            if (popStyle == ADTPopAnimationStyleSpringFromTop||
+                popStyle == ADTPopAnimationStyleSpringFromLeft||
+                popStyle == ADTPopAnimationStyleSpringFromBottom||
+                popStyle == ADTPopAnimationStyleSpringFromRight) {
                 damping = 0.65;
             }
             
@@ -975,11 +975,11 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             } completion:nil];
         }
             break;
-        case ADTPopStyleCardDropFromLeft:
-        case ADTPopStyleCardDropFromRight:
+        case ADTPopAnimationStyleCardDropFromLeft:
+        case ADTPopAnimationStyleCardDropFromRight:
         {
             CGPoint startPosition = self.customView.layer.position;
-            if (popStyle == ADTPopStyleCardDropFromLeft) {
+            if (popStyle == ADTPopAnimationStyleCardDropFromLeft) {
                 self.customView.layer.position = CGPointMake(startPosition.x * 1.0, -_customView.pv_Height*0.5);
                 self.customView.transform = CGAffineTransformMakeRotation(ADT_DEGREES_TO_RADIANS(15.0));
             } else {
@@ -992,10 +992,10 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             } completion:nil];
             
             [UIView animateWithDuration:duration*0.6 animations:^{
-                wk_self.customView.layer.transform = CATransform3DMakeRotation(ADT_DEGREES_TO_RADIANS((popStyle == ADTPopStyleCardDropFromRight) ? 5.5 : -5.5), 0, 0, 0);
+                wk_self.customView.layer.transform = CATransform3DMakeRotation(ADT_DEGREES_TO_RADIANS((popStyle == ADTPopAnimationStyleCardDropFromRight) ? 5.5 : -5.5), 0, 0, 0);
             } completion:^(BOOL finished) {
                 [UIView animateWithDuration:duration*0.2 animations:^{
-                    wk_self.customView.transform = CGAffineTransformMakeRotation(ADT_DEGREES_TO_RADIANS((popStyle == ADTPopStyleCardDropFromRight) ? -1.0 : 1.0));
+                    wk_self.customView.transform = CGAffineTransformMakeRotation(ADT_DEGREES_TO_RADIANS((popStyle == ADTPopAnimationStyleCardDropFromRight) ? -1.0 : 1.0));
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:duration*0.2 animations:^{
                         wk_self.customView.transform = CGAffineTransformMakeRotation(0.0);
@@ -1015,7 +1015,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     [self dismissWithStyle:self.dismissStyle duration:self.dismissDuration];
 }
 
-- (void)dismissWithStyle:(ADTDismissStyle)dismissStyle {
+- (void)dismissWithStyle:(ADTPopDismissStyle)dismissStyle {
     [self dismissWithStyle:dismissStyle duration:self.dismissDuration];
 }
 
@@ -1023,11 +1023,11 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     [self dismissWithStyle:self.dismissStyle duration:duration];
 }
 
-- (void)dismissWithStyle:(ADTDismissStyle)dismissStyle duration:(NSTimeInterval)duration  {
+- (void)dismissWithStyle:(ADTPopDismissStyle)dismissStyle duration:(NSTimeInterval)duration  {
     [self dismissWithDismissStyle:dismissStyle duration:duration isRemove:YES];
 }
 
-- (void)dismissWithDismissStyle:(ADTDismissStyle)dismissStyle
+- (void)dismissWithDismissStyle:(ADTPopDismissStyle)dismissStyle
                        duration:(NSTimeInterval)duration
                        isRemove:(BOOL)isRemove {
     
@@ -1056,7 +1056,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
                     [tPopView.container addSubview:tPopView];
                     [ADTPopViewM().showList addPointer:(__bridge void * _Nullable)tPopView];
                 }
-                [tPopView popWithPopStyle:ADTPopStyleFade duration:0.25 isOutStack:YES];
+                [tPopView popWithPopStyle:ADTPopAnimationStyleFade duration:0.25 isOutStack:YES];
             }
         });
     }
@@ -1067,15 +1067,15 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     }
 }
 
-- (void)dismissAnimationWithDismissStyle:(ADTDismissStyle)dismissStyle duration:(NSTimeInterval)duration {
+- (void)dismissAnimationWithDismissStyle:(ADTPopDismissStyle)dismissStyle duration:(NSTimeInterval)duration {
     
     ADTPopViewWK(self);
-    if (dismissStyle == ADTPopStyleFade) {
+    if (dismissStyle == ADTPopAnimationStyleFade) {
         [UIView animateWithDuration:0.2 animations:^{
             wk_self.backgroundView.backgroundColor = [self getNewColorWith:self.bgColor alpha:0.0];
             wk_self.customView.alpha = 0.0f;
         }];
-    }else if (dismissStyle == ADTPopStyleNO){
+    }else if (dismissStyle == ADTPopAnimationStyleNO){
         wk_self.backgroundView.backgroundColor = [self getNewColorWith:self.bgColor alpha:0.0];
         wk_self.customView.alpha = 0.0f;
     }else {//有动画
@@ -1087,7 +1087,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 }
 
 - (void)hanleDismissAnimationWithDuration:(NSTimeInterval)duration
-                         withDismissStyle:(ADTDismissStyle)dismissStyle {
+                         withDismissStyle:(ADTPopDismissStyle)dismissStyle {
     
     [UIView animateWithDuration:duration*0.8 animations:^{
         self.alpha = 0;
@@ -1095,25 +1095,25 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
     
     ADTPopViewWK(self);;
     switch (dismissStyle) {
-        case ADTDismissStyleScale:
+        case ADTPopDismissStyleScale:
         {
             [self animationWithLayer:self.customView.layer duration:((0.2*duration)/0.8) values:@[@1.0, @0.66, @0.33, @0.01]];
         }
             break;
-        case ADTDismissStyleSmoothToTop:
-        case ADTDismissStyleSmoothToBottom:
-        case ADTDismissStyleSmoothToLeft:
-        case ADTDismissStyleSmoothToRight:
+        case ADTPopDismissStyleSmoothToTop:
+        case ADTPopDismissStyleSmoothToBottom:
+        case ADTPopDismissStyleSmoothToLeft:
+        case ADTPopDismissStyleSmoothToRight:
         {
             CGPoint startPosition = self.customView.layer.position;
             CGPoint endPosition = self.customView.layer.position;
-            if (dismissStyle == ADTDismissStyleSmoothToTop) {
+            if (dismissStyle == ADTPopDismissStyleSmoothToTop) {
                 endPosition = CGPointMake(startPosition.x, -(_customView.pv_Height*0.5));
                 
-            } else if (dismissStyle == ADTDismissStyleSmoothToBottom) {
+            } else if (dismissStyle == ADTPopDismissStyleSmoothToBottom) {
                 endPosition = CGPointMake(startPosition.x, CGRectGetMaxY(self.frame) + _customView.pv_Height*0.5);
                 
-            } else if (dismissStyle == ADTDismissStyleSmoothToLeft) {
+            } else if (dismissStyle == ADTPopDismissStyleSmoothToLeft) {
                 endPosition = CGPointMake(-_customView.pv_Width*0.5, startPosition.y);
                 
             } else {
@@ -1125,14 +1125,14 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             } completion:nil];
         }
             break;
-        case ADTDismissStyleCardDropToLeft:
-        case ADTDismissStyleCardDropToRight:
+        case ADTPopDismissStyleCardDropToLeft:
+        case ADTPopDismissStyleCardDropToRight:
         {
             CGPoint startPosition = self.customView.layer.position;
             BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
             __block CGFloat rotateEndY = 0.0f;
             [UIView animateWithDuration:duration delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:1.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-                if (dismissStyle == ADTDismissStyleCardDropToLeft) {
+                if (dismissStyle == ADTPopDismissStyleCardDropToLeft) {
                     wk_self.customView.transform = CGAffineTransformMakeRotation(M_1_PI * 0.75);
                     if (isLandscape) rotateEndY = fabs(wk_self.customView.frame.origin.y);
                     wk_self.customView.layer.position = CGPointMake(startPosition.x, CGRectGetMaxY(wk_self.frame) + startPosition.y + rotateEndY);
@@ -1144,7 +1144,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             } completion:nil];
         }
             break;
-        case ADTDismissStyleCardDropToTop:
+        case ADTPopDismissStyleCardDropToTop:
         {
             CGPoint startPosition = self.customView.layer.position;
             CGPoint endPosition = CGPointMake(startPosition.x, -startPosition.y);
@@ -1257,28 +1257,28 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 
 - (NSTimeInterval)getPopDuration:(NSTimeInterval)currDuration {
     
-    if (_popStyle == ADTPopStyleNO) { return 0.0f; }
+    if (_popStyle == ADTPopAnimationStyleNO) { return 0.0f; }
     
-    if (_popStyle == ADTPopStyleFade) { return 0.2f; }
+    if (_popStyle == ADTPopAnimationStyleFade) { return 0.2f; }
     
     if (currDuration<=0) { self.popDuration = ADTPopViewDefaultDuration; }
     
     if (self.popDuration == ADTPopViewDefaultDuration) {
         NSTimeInterval defaultDuration = 0.0f;
 
-        if (_popStyle == ADTPopStyleScale) {
+        if (_popStyle == ADTPopAnimationStyleScale) {
             defaultDuration = 0.3f;
         }
-        if (_popStyle == ADTPopStyleSmoothFromTop ||
-            _popStyle == ADTPopStyleSmoothFromLeft ||
-            _popStyle == ADTPopStyleSmoothFromBottom ||
-            _popStyle == ADTPopStyleSmoothFromRight ||
-            _popStyle == ADTPopStyleSpringFromTop ||
-            _popStyle == ADTPopStyleSpringFromLeft ||
-            _popStyle == ADTPopStyleSpringFromBottom ||
-            _popStyle == ADTPopStyleSpringFromRight ||
-            _popStyle == ADTPopStyleCardDropFromLeft ||
-            _popStyle == ADTPopStyleCardDropFromRight) {
+        if (_popStyle == ADTPopAnimationStyleSmoothFromTop ||
+            _popStyle == ADTPopAnimationStyleSmoothFromLeft ||
+            _popStyle == ADTPopAnimationStyleSmoothFromBottom ||
+            _popStyle == ADTPopAnimationStyleSmoothFromRight ||
+            _popStyle == ADTPopAnimationStyleSpringFromTop ||
+            _popStyle == ADTPopAnimationStyleSpringFromLeft ||
+            _popStyle == ADTPopAnimationStyleSpringFromBottom ||
+            _popStyle == ADTPopAnimationStyleSpringFromRight ||
+            _popStyle == ADTPopAnimationStyleCardDropFromLeft ||
+            _popStyle == ADTPopAnimationStyleCardDropFromRight) {
             defaultDuration = 0.6f;
         }
         return defaultDuration;
@@ -1288,26 +1288,26 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 }
 - (NSTimeInterval)getDismissDuration:(NSTimeInterval)currDuration {
     
-    if (_dismissStyle == ADTDismissStyleNO) { return 0.0f; }
+    if (_dismissStyle == ADTPopDismissStyleNO) { return 0.0f; }
     
-    if (_dismissStyle == ADTDismissStyleFade) { return 0.2f; }
+    if (_dismissStyle == ADTPopDismissStyleFade) { return 0.2f; }
     
     if (self.dismissDuration == ADTPopViewDefaultDuration) {
         NSTimeInterval defaultDuration = 0.0f;
-        if (_dismissStyle == ADTDismissStyleNO) {
+        if (_dismissStyle == ADTPopDismissStyleNO) {
             defaultDuration = 0.0f;
         }
         
-        if (_dismissStyle == ADTDismissStyleScale) {
+        if (_dismissStyle == ADTPopDismissStyleScale) {
             defaultDuration = 0.3f;
         }
-        if (_dismissStyle == ADTDismissStyleSmoothToTop ||
-            _dismissStyle == ADTDismissStyleSmoothToBottom ||
-            _dismissStyle == ADTDismissStyleSmoothToLeft ||
-            _dismissStyle == ADTDismissStyleSmoothToRight ||
-            _dismissStyle == ADTDismissStyleCardDropToLeft ||
-            _dismissStyle == ADTDismissStyleCardDropToRight ||
-            _dismissStyle == ADTDismissStyleCardDropToTop) {
+        if (_dismissStyle == ADTPopDismissStyleSmoothToTop ||
+            _dismissStyle == ADTPopDismissStyleSmoothToBottom ||
+            _dismissStyle == ADTPopDismissStyleSmoothToLeft ||
+            _dismissStyle == ADTPopDismissStyleSmoothToRight ||
+            _dismissStyle == ADTPopDismissStyleCardDropToLeft ||
+            _dismissStyle == ADTPopDismissStyleCardDropToRight ||
+            _dismissStyle == ADTPopDismissStyleCardDropToTop) {
             defaultDuration = 0.5f;
         }
         return defaultDuration;
@@ -1419,7 +1419,6 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 #pragma mark - ***** 键盘弹出/收回 *****
 
 - (void)keyboardWillShow:(NSNotification *)notification{
-    //    ADTPVLog(@"keyboardWillShow");
     _isShowKeyboard = YES;
   
     self.keyboardWillShowBlock? self.keyboardWillShowBlock():nil;
@@ -1465,7 +1464,6 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 }
 
 - (void)keyboardWillChangeFrame:(NSNotification *)notification{
-    //    ADTPVLog(@"键盘frame将要改变");
     if (self.keyboardFrameWillChangeBlock) {
         CGRect keyboardBeginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
         CGRect keyboardEedFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -1475,7 +1473,6 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
 }
 
 - (void)keyboardDidChangeFrame:(NSNotification *)notification{
-    //    ADTPVLog(@"键盘frame已经改变");
     if (self.keyboardFrameDidChangeBlock) {
         CGRect keyboardBeginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
         CGRect keyboardEedFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -1517,7 +1514,6 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
         }
     } else if(gestureRecognizer == self.panGesture){
         //如果是自己加的拖拽手势
-        //        ADTPVLog(@"gestureRecognizerShouldBegin");
     }
     return YES;
 }
@@ -1628,18 +1624,18 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             
             if (isY_P==NO && isY_N==NO && self.sweepDismissStyle == ADTSweepDismissStyleSmooth) {//X轴可轻扫
                 if (velocity.x>0) {//正向
-                    [self dismissWithStyle:ADTDismissStyleSmoothToRight duration:self.dismissDuration];
+                    [self dismissWithStyle:ADTPopDismissStyleSmoothToRight duration:self.dismissDuration];
                 } else {//负向
-                    [self dismissWithStyle:ADTDismissStyleSmoothToLeft duration:self.dismissDuration];
+                    [self dismissWithStyle:ADTPopDismissStyleSmoothToLeft duration:self.dismissDuration];
                 }
                 return;
             }
             
             if (isX_P==NO && isX_N==NO && self.sweepDismissStyle == ADTSweepDismissStyleSmooth) {//Y轴可轻扫
                 if (velocity.y>0) {//正向
-                    [self dismissWithStyle:ADTDismissStyleSmoothToBottom duration:self.dismissDuration];
+                    [self dismissWithStyle:ADTPopDismissStyleSmoothToBottom duration:self.dismissDuration];
                 } else {//负向
-                    [self dismissWithStyle:ADTDismissStyleSmoothToTop duration:self.dismissDuration];
+                    [self dismissWithStyle:ADTPopDismissStyleSmoothToTop duration:self.dismissDuration];
                 }
                 return;
             }
@@ -1648,7 +1644,7 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
                 wk_self.backgroundView.backgroundColor = [self getNewColorWith:self.bgColor alpha:0.0];
                 self.customView.center = CGPointMake(isX_P || isX_N?velocity.x:self.customView.pv_CenterX, isY_P||isY_N?velocity.y:self.customView.pv_CenterY);
             } completion:^(BOOL finished) {
-                [wk_self dismissWithStyle:ADTDismissStyleFade duration:0.1];
+                [wk_self dismissWithStyle:ADTPopDismissStyleFade duration:0.1];
             }];
         };
         
@@ -1667,20 +1663,19 @@ static const NSTimeInterval ADTPopViewDefaultDuration = -1.0f;
             BOOL isY_N = NO;
             
             if ((self.dragStyle & ADTDragStyleX_Positive) && velocity.x>0 && velocityX >= self.swipeVelocity) {
-                isX_P = self.sweepStyle & ADTSweepStyleX_Positive? YES:NO;
+                isX_P = self.sweepStyle & ADTPopSweepStyleX_Positive? YES:NO;
             }
             if ((self.dragStyle & ADTDragStyleX_Negative) && velocity.x<0 && velocityX >= self.swipeVelocity) {
-                isX_N = self.sweepStyle & ADTSweepStyleX_Negative? YES:NO;
+                isX_N = self.sweepStyle & ADTPopSweepStyleX_Negative? YES:NO;
             }
             
             if ((self.dragStyle & ADTDragStyleY_Positive) && velocity.y>0 && velocityY >= self.swipeVelocity) {
-                isY_P = self.sweepStyle & ADTSweepStyleY_Positive? YES:NO;
+                isY_P = self.sweepStyle & ADTPopSweepStyleY_Positive? YES:NO;
             }
             if ((self.dragStyle & ADTDragStyleY_Negative) && velocity.y <0 && velocityY >= self.swipeVelocity) {
-                isY_N = self.sweepStyle & ADTSweepStyleY_Negative? YES:NO;
+                isY_N = self.sweepStyle & ADTPopSweepStyleY_Negative? YES:NO;
             }
-            sweepBlock(isX_P,isX_N,isY_P,isY_N);
-//            ADTPVLog(@"isX=%@,isY=%@,velocityX=%lf,velocityY=%lf",isX?@"YES":@"NO",isY?@"YES":@"NO",velocityX,velocityY);
+            sweepBlock(isX_P,isX_N,isY_P,isY_N); 
         }else {//普通拖拽
             BOOL isCanDismiss = NO;
             if (self.dragStyle & ADTDragStyleAll) {
