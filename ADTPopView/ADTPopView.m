@@ -79,6 +79,7 @@ ADTPopViewManager *ADTPopViewM() {
 + (NSArray *)getAllPopView {
     return ADTPopViewM().popViewMarr;
 }
+
 /** 获取当前页面所有popView */
 + (NSArray *)getAllPopViewForParentView:(UIView *)parentView {
     NSMutableArray *mArr = ADTPopViewM().popViewMarr;

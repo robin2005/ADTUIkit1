@@ -36,15 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ADTPopView : UIView
 
-
-/** 代理 支持多代理 */
-@property (nonatomic, weak) id<ADTPopViewProtocol> _Nullable delegate;
-/** 标识 默认为空 */
-@property (nonatomic, copy) NSString *_Nullable identifier;
-/** 弹窗容器 */
-@property (nonatomic, readonly) UIView *parentView;
-/** 自定义view */
-@property (nonatomic, readonly) UIView *currCustomView;
 /** 弹窗位置 默认Center */
 @property (nonatomic, assign) ADTPostionStyle hemStyle;
 /** 显示时动画弹窗样式 默认ADTPopAnimationStyleNO */
@@ -84,6 +75,15 @@ NS_ASSUME_NONNULL_BEGIN
 /** 弹出震动反馈 默认NO iOS10+ 系统才有此效果 */
 @property (nonatomic, assign) BOOL isImpactFeedback;
 
+/** 代理 支持多代理 */
+@property (nonatomic, weak) id<ADTPopViewProtocol> _Nullable delegate;
+/** 标识 默认为空 */
+@property (nonatomic, copy) NSString *_Nullable identifier;
+/** 弹窗容器 */
+@property (nonatomic, readonly) UIView *parentView;
+/** 自定义view */
+@property (nonatomic, readonly) UIView *currCustomView;
+
 //************ 群组相关属性 ****************
 /** 群组标识 统一给弹窗编队 方便独立管理 默认为nil,统一全局处理 */
 @property (nullable,nonatomic,strong) NSString *groupId;
@@ -112,7 +112,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 轻扫速率 控制轻扫移除 默认1000  基于使用sweepStyle */
 @property (nonatomic, assign) CGFloat swipeVelocity;
 /** 轻扫移除的动画 默认ADTSweepDismissStyleVelocity  */
-@property (nonatomic, assign) ADTSweepDismissStyle sweepDismissStyle; 
+@property (nonatomic, assign) ADTSweepDismissStyle sweepDismissStyle;
+
+
 
 /** 点击背景 */
 @property (nullable, nonatomic, copy) void(^bgClickBlock)(void);
@@ -194,8 +196,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeForDelegate:(id<ADTPopViewProtocol>)delegate;
 /** 删除代理池 删除所有代理 */
 - (void)removeAllDelegate;
-
-
+ 
 
 #pragma mark - ***** 以下是 窗口管理api *****
 
@@ -228,8 +229,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @end
-
-
-
 
 NS_ASSUME_NONNULL_END
